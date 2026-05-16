@@ -1,6 +1,6 @@
 {
   "name": "Pulse Plan",
-  "version": "1.1",
+  "version": "1.3",
   "status": "Live",
   "emoji": "⚡",
   "tagline": "Intelligent Planning & Learning Companion",
@@ -16,7 +16,7 @@
     {
       "icon": "📅",
       "title": "Daily Calendar",
-      "desc": "Month-view calendar with color-coded task dots, one-click day drill-down, full task CRUD with priority and category system"
+      "desc": "Month-view calendar with color-coded task dots, one-click day drill-down, full task CRUD with priority and category system, natural language time/date parser in the task input, and a one-tap complete toggle on every card"
     },
     {
       "icon": "🌐",
@@ -54,5 +54,5 @@
     "Vibe Coding"
   ],
   "accentColor": "#8b5cf6",
-  "lastUpdated": "2026-04-20"
+  "lastUpdated": "2026-05-17"
 }
