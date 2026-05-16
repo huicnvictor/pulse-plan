@@ -14,6 +14,7 @@ import {
 } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { cn, categoryBg, categoryTextColor, todayStr } from '@/lib/utils'
+import { parseTaskText } from '@/lib/parse-task-time'
 import { usePulsePlanStore, type Task } from '@/lib/store'
 
 const CATEGORIES = ['Health', 'Work', 'Study', 'Social', 'Finance', 'Creative', 'Personal']
@@ -74,9 +75,12 @@ export function DayTaskList({ date }: Props) {
   const updateTask = usePulsePlanStore((s) => s.updateTask)
 
   const [showAdd, setShowAdd] = useState(false)
-  const [form, setForm] = useState<AddForm>(EMPTY_FORM)
+  const [form, setForm] = useState<AddForm>({ ...EMPTY_FORM, date })
   const [expandedId, setExpandedId] = useState<string | null>(null)
   const [view, setView] = useState<'list' | 'timeline'>('list')
+  // Track which fields were auto-filled by the parser so we don't clobber
+  // values the user picked manually.
+  const autofilled = useRef({ time: false, date: false })
 
   const dayTasks = tasks
     .filter((t) => t.date === date)
@@ -85,13 +89,42 @@ export function DayTaskList({ date }: Props) {
   const completed = dayTasks.filter((t) => t.completed).length
   const isToday = date === todayStr()
 
+  function handleTitleChange(value: string) {
+    const parsed = parseTaskText(value)
+    setForm((prev) => {
+      const next: AddForm = { ...prev, title: value }
+      if (parsed.time && (!prev.time || autofilled.current.time)) {
+        next.time = parsed.time
+        autofilled.current.time = true
+      }
+      if (parsed.date && (prev.date === date || autofilled.current.date)) {
+        next.date = parsed.date
+        autofilled.current.date = true
+      }
+      return next
+    })
+  }
+
+  function openAdd() {
+    setForm({ ...EMPTY_FORM, date })
+    autofilled.current = { time: false, date: false }
+    setShowAdd(true)
+  }
+
+  function closeAdd() {
+    setForm({ ...EMPTY_FORM, date })
+    autofilled.current = { time: false, date: false }
+    setShowAdd(false)
+  }
+
   function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     if (!form.title.trim()) return
+    const parsed = parseTaskText(form.title)
     addTask({
-      title: form.title.trim(),
-      date,
-      time: form.time || undefined,
+      title: (parsed.title || form.title).trim(),
+      date: form.date || parsed.date || date,
+      time: form.time || parsed.time || undefined,
       duration: form.duration ? parseInt(form.duration) : undefined,
       category: form.category,
       completed: false,
@@ -99,8 +132,7 @@ export function DayTaskList({ date }: Props) {
       source: 'manual',
       notes: form.notes || undefined,
     })
-    setForm(EMPTY_FORM)
-    setShowAdd(false)
+    closeAdd()
   }
 
   return (
@@ -138,7 +170,7 @@ export function DayTaskList({ date }: Props) {
             </button>
           </div>
           <button
-            onClick={() => setShowAdd(!showAdd)}
+            onClick={() => (showAdd ? closeAdd() : openAdd())}
             className={cn(
               'flex items-center gap-2 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200',
               showAdd
@@ -165,18 +197,33 @@ export function DayTaskList({ date }: Props) {
         >
           <input
             autoFocus
-            placeholder="Task title..."
+            placeholder='试试 "下午两点开会" 或 "明天 3pm gym"'
             value={form.title}
-            onChange={(e) => setForm({ ...form, title: e.target.value })}
+            onChange={(e) => handleTitleChange(e.target.value)}
             className="w-full bg-neumo-bg shadow-neumo-press rounded-xl px-3 py-2.5 text-sm text-neumo-text placeholder-neumo-subtle outline-none transition-all"
           />
-          <div className="grid grid-cols-2 gap-2">
+          <div className="grid grid-cols-3 gap-2">
+            <div>
+              <label className="text-[11px] text-neumo-subtle mb-1 block">Date</label>
+              <input
+                type="date"
+                value={form.date}
+                onChange={(e) => {
+                  autofilled.current.date = false
+                  setForm({ ...form, date: e.target.value })
+                }}
+                className="w-full bg-neumo-bg shadow-neumo-press rounded-xl px-3 py-2 text-sm text-neumo-text outline-none transition-all"
+              />
+            </div>
             <div>
               <label className="text-[11px] text-neumo-subtle mb-1 block">Time</label>
               <input
                 type="time"
                 value={form.time}
-                onChange={(e) => setForm({ ...form, time: e.target.value })}
+                onChange={(e) => {
+                  autofilled.current.time = false
+                  setForm({ ...form, time: e.target.value })
+                }}
                 className="w-full bg-neumo-bg shadow-neumo-press rounded-xl px-3 py-2 text-sm text-neumo-text outline-none transition-all"
               />
             </div>
@@ -570,6 +617,17 @@ function TaskCard({
       )}
     >
       <div className="flex items-center gap-3 p-3.5">
+        <button
+          onClick={onToggle}
+          className="shrink-0 transition-colors"
+          title={task.completed ? 'Mark as not done' : 'Mark complete'}
+        >
+          {task.completed ? (
+            <CheckCircle2 size={18} className="text-emerald-500" />
+          ) : (
+            <Circle size={18} className="text-neumo-subtle hover:text-emerald-500" />
+          )}
+        </button>
         <button onClick={onToggleExpand} className="flex-1 text-left min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span
@@ -624,6 +682,7 @@ function TaskCard({
             onClick={() => {
               setEditForm({
                 title: task.title,
+                date: task.date,
                 time: task.time ?? '',
                 duration: task.duration ? String(task.duration) : '',
                 category: task.category,
