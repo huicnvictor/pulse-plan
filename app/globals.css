@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #E4E9F0;
+    color: #2d3748;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* Soft scrollbar (Neumorphism) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #BEC8D4;
+  border-radius: 99px;
+  border: 2px solid #E4E9F0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a0aec0;
+}
+
+/* Neumorphic range input */
+input[type="range"] {
+  -webkit-appearance: none;
+  height: 10px;
+  background: #E4E9F0;
+  border-radius: 99px;
+  outline: none;
+  box-shadow: inset 3px 3px 6px #BEC8D4, inset -3px -3px 6px #FFFFFF;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 2px 2px 5px #BEC8D4, -2px -2px 5px #FFFFFF;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  box-shadow: 2px 2px 5px #BEC8D4, -2px -2px 5px #FFFFFF;
+}

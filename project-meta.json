@@ -1,0 +1,58 @@
+{
+  "name": "Pulse Plan",
+  "version": "1.1",
+  "status": "Live",
+  "emoji": "⚡",
+  "tagline": "Intelligent Planning & Learning Companion",
+  "shortDesc": "A full-stack productivity app that unifies daily scheduling, yearly goal tracking, web-based event discovery, and visual learning maps — built to reduce planning friction.",
+  "pmHighlights": [
+    "Defined user stories across 4 core feature areas before writing a single line of code",
+    "Prioritized MVP scope: daily calendar + scraper first, mind map as Phase 2",
+    "Designed a behavioral data loop — accept/ignore actions train a suggestion engine",
+    "Shipped features incrementally and validated each interaction flow end-to-end",
+    "Applied Jobs-to-be-Done thinking: the core job is 'help me decide what to do next'"
+  ],
+  "features": [
+    {
+      "icon": "📅",
+      "title": "Daily Calendar",
+      "desc": "Month-view calendar with color-coded task dots, one-click day drill-down, full task CRUD with priority and category system"
+    },
+    {
+      "icon": "🌐",
+      "title": "Web Scraper & Action Center",
+      "desc": "Paste any event URL — the app extracts activities and presents them as decision cards (Add / Ignore), reducing context-switching overhead"
+    },
+    {
+      "icon": "✨",
+      "title": "Smart Suggestions",
+      "desc": "Behavioral learning engine records accept/ignore history per category and surfaces personalized recommendation reasons on future scrapes"
+    },
+    {
+      "icon": "🗺️",
+      "title": "Visual Mind Map",
+      "desc": "Interactive SVG node map with real-time animated progress rings, zoom/pan canvas, drill-down subtask management — built without any graph library"
+    },
+    {
+      "icon": "🎯",
+      "title": "Yearly Goal Tracker",
+      "desc": "Goal cards with milestone checklists; completing milestones auto-calculates overall goal progress percentage"
+    }
+  ],
+  "techStack": [
+    "Next.js 14",
+    "React",
+    "Tailwind CSS",
+    "Zustand",
+    "SVG Canvas",
+    "date-fns",
+    "framer-motion"
+  ],
+  "tags": [
+    "Productivity",
+    "Full-Stack",
+    "Vibe Coding"
+  ],
+  "accentColor": "#8b5cf6",
+  "lastUpdated": "2026-04-20"
+}
